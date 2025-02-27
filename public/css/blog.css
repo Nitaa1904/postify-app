@@ -1,0 +1,72 @@
+/* Global Styles */
+body {
+    background-color: #f4f4f4;
+    font-family: "Arial", sans-serif;
+    color: #333;
+}
+
+/* Navbar */
+.navbar-custom {
+    background-color: #1f1f1f;
+    padding: 12px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-custom .navbar-brand {
+    color: #fff;
+    font-weight: bold;
+}
+
+.navbar-custom .nav-link {
+    color: #ccc;
+    font-size: 16px;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #fff;
+}
+
+/* Card */
+.custom-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.custom-card:hover {
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Title & Text */
+.card-title {
+    color: #1f1f1f;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #555;
+    font-size: 14px;
+}
+
+/* Button */
+.btn-primary {
+    background-color: #333;
+    border-color: #333;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #222;
+    border-color: #222;
+}
+
+/* Footer */
+.footer {
+    background-color: #1f1f1f;
+    color: #ccc;
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+}
