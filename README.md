@@ -243,3 +243,58 @@ To Do
     ```
 
 ### Membuat Form Tambah Data
+
+-   buat route baru (mnempilkan form dan menyimpan)
+    `Route::get('/posts/create', [PostController::class, 'create']);`
+    noted letakan route ini di atas posts/{id} agar diprioritaskan
+-   buat function create di PostController
+    ```php
+    public function create()
+        {
+            return view('posts.create');
+        }
+    ```
+-   buat folder views/posts/create.blade.php
+-   buat tombol di index.blade.php yang mengarahkan ke create
+    ```html
+    <a class="btn btn-success" href="{{ url('posts/create') }}"
+        >+ Buat Postingan</a
+    >
+    ```
+-   buat route yang akan memproses form yang ada di create
+    `Route::post('posts', [PostController::class, 'store']);`
+
+-   CSRF di dalam Form (Pemrosesan terhadap postingan)
+    tambahkan @csrf didalam form untuk pengamanan
+-   buat controller storenya
+
+    ```php
+    public function store(Request $request)
+        {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'content' => 'required|string',
+            ]);
+
+            $title = $request->input('title');
+            $content = $request->input('content');
+            $date = now()->toDateTimeString();
+
+            $path = storage_path('app/posts.txt');
+
+            if (!file_exists($path)) {
+                file_put_contents($path, "");
+            }
+
+            $posts = file_get_contents($path);
+            $posts = trim($posts, "\" \n\r");
+            $posts = $posts ? explode("\n", $posts) : [];
+
+            $new_post = implode(',', [uniqid(), $title, $content, $date]);
+
+            array_push($posts, $new_post);
+            $posts = implode("\n", $posts);
+            file_put_contents($path, $posts);
+            return redirect('/posts')->with('success', 'Postingan berhasil dibuat!');
+        }
+    ```

@@ -32,19 +32,56 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return view('posts.create');
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Validasi input
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
 
+        // Ambil data dari request
+        $title = $request->input('title');
+        $content = $request->input('content');
+        $date = now()->toDateTimeString(); // Format tanggal yang lebih aman
+
+        // Path file penyimpanan
+        $path = storage_path('app/posts.txt');
+
+        // Jika file belum ada, buat file kosong
+        if (!file_exists($path)) {
+            file_put_contents($path, "");
+        }
+
+        // Membaca isi file
+        $posts = file_get_contents($path);
+        $posts = trim($posts, "\" \n\r");
+        $posts = $posts ? explode("\n", $posts) : [];
+
+        // Buat post baru
+        $new_post = implode(',', [uniqid(), $title, $content, $date]);
+
+        // Tambahkan post baru ke dalam array posts
+        array_push($posts, $new_post);
+
+        // Gabungkan array menjadi string dengan newline
+        $posts = implode("\n", $posts);
+
+        // Simpan kembali ke file
+        file_put_contents($path, $posts);
+
+        // Redirect ke halaman daftar post
+        return redirect('/posts')->with('success', 'Postingan berhasil dibuat!');
+    }
     /**
      * Display the specified resource.
      */
