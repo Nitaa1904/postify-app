@@ -298,3 +298,209 @@ To Do
             return redirect('/posts')->with('success', 'Postingan berhasil dibuat!');
         }
     ```
+
+## Database Migration & Query Builder
+
+-   secara otomatis sudah membuat migration di database/migration
+
+-   migrasi databasenya
+    `php artisan migrate`
+    jika ingin membatalkan migrasi
+    `php artisan migrate:rollback`
+
+### Menjalankan Migrasi Baru
+
+-   di terminal lakukan ini dan maka file migration baru akan digenerate
+    `php artisan make:migration create_posts_table`
+-   dalam file migrasinya tambahkan tabel
+    ```php
+    $table->string('title');
+    $table->text('content');
+    ```
+-   lalu migrate `php artisan migrate`
+
+### Menyimpan Data dengan Query Builder
+
+-   deklarasikan `use Illuminate\Support\Facades\DB;` di postController
+-   ubah bagian function Store
+
+        ```php
+        public function store(Request $request)
+        {
+        $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        ]);
+            DB::table('posts')->insert([
+                'title' => $request->input('title'),
+                'content' => $request->input('content'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            return redirect('/posts')->with('success', 'Postingan berhasil dibuat!');
+
+        }
+        ```
+
+### Menampilkan List Data dengan Query Builder
+
+-   ubah bagian function indexnya
+
+    ```php
+    public function index()
+        {
+           $posts = DB::table('posts')
+                    ->select('id', 'title', 'content', 'created_at')
+                    ->get();
+            $view_data = [
+                'posts' => $posts,
+            ];
+
+            return view('posts.index', $view_data);
+        }
+    ```
+
+-   ubah bagian views/index (array idnya diganti dengan nama atribut tabel)
+
+    ```html
+    @foreach($posts as $post)
+                <div class="col-md-6 mb-4">
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $post->title }} </h5>
+                            <p class="card-text">{{ $post->content }}</p>
+                            <p class="card-text text-muted">Last Updated at
+                                {{date("d M Y H:i", strtotime($post->created_at )) }}</p>
+                            <a href="{{ url("posts/$post->id") }}" class="btn btn-primary btn-sm">Read More</a>
+                        </div>
+                    </div>
+                </div>
+
+                @endforeach
+    ```
+
+### Menampilkan Single Data dengan Query Builder
+
+-   ubah bagian show$id
+
+    ```php
+    public function show($id)
+        {
+            $post = DB::table('posts')
+                ->select('id', 'title', 'content', 'created_at')
+                ->where('id', '=', $id)
+                ->first();
+
+            $view_data = [
+                'post' => $post
+            ];
+            return view('posts.show', $view_data);
+        }
+    ```
+
+### Mengubah Data dengan Query Builder
+
+-   action edit untuk menampilkan form dan action update untuk melakukan perubahan data
+-   buat route
+    `Route::get('posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');`
+    `Route::patch('posts/{id}', [PostController::class, 'edit'])->name('posts.edit');`
+
+-   PostController function edit
+
+    ```php
+    public function edit(string $id)
+        {
+            $post = DB::table('posts')
+                ->select('id', 'title', 'content', 'created_at')
+                ->where('id', '=', $id)
+                ->first();
+
+            $view_data = [
+                'post' => $post
+            ];
+            return view('posts.edit', $view_data);
+        }
+    ```
+
+-   buat file baru views/posts/edit.blade.php
+
+    ```HTML
+    <div class="container mt-5">
+        <div class="card custom-card p-4">
+            <h2 class="mb-4">Ubah Postingan</h2>
+            <form method="POST" action="{{ url('posts/' . $post->id) }}">
+                @method('PATCH')
+                @csrf
+                <div class="mb-3">
+                    <label for="title" class="form-label">Judul</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ $post->title }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Konten</label>
+                    <textarea class="form-control" id="content" name="content" rows="5" required>{{ $post->content }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+    ```
+
+-   buat ini di PostController function update
+
+    ```php
+    public function update(Request $request, string $id)
+        {
+            $title = $request->input('title');
+            $content = $request->input('content');
+
+            DB::table('posts')
+            ->where('id', $id)
+            ->update([
+                'title' => $title,
+                'content' => $content,
+                'update_at' => date('Y-m-d H:i:s'),
+
+            ]);
+            return redirect("posts/{$id}");
+        }
+    ```
+
+### Menghapus Data dengan Query Builder
+
+-   buat route
+    `Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');`
+
+-   buat form rahasia untuk hapus
+
+        ```html
+        <form method="POST" action="{{ url("posts/$post->id") }}">
+        @method('DELETE')
+        @csrf
+        <button type="submit" class="btn btn-danger">Hapus</button>
+
+    </form>
+
+        ```
+
+-   buat function destroy di PostController
+
+    ```php
+    public function destroy(string $id)
+        {
+            DB::table('posts')
+            ->where('id', $id)
+            ->delete();
+
+            return redirect('posts');
+        }
+    ```
+
+### Menambah Kolom Baru di Migrasi
+
+-   `php artisan make:migration add_active_to_posts`
+-   akan mengenerate migrasi baru dan tambahkan ini di up
+    `$table->boolean('active')->after('content')->default(true);`
+-   after membuat kolom active setelah conten
+-   tambahkan ini di down `$table->dropColumn('active');`
+-   lalu `php artisan migrate`
+-   melakukan filter di index, tambahkan ini di function index `->where('active', true)`

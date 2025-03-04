@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Postify | Judul: {{ $post[1]}} </title>
+    <title>Postify | Judul: {{ $post->title}} </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
@@ -39,12 +39,12 @@
     <!-- Blog Post -->
     <div class="container mt-5">
         <div class="card custom-card p-4">
-            <h2 class="display-5 fw-bold">{{ $post[1] }}</h2>
-            <p class="blog-post-meta text-muted">Published on {{date("d M Y H:i", strtotime($post[3] )) }} by
+            <h2 class="display-5 fw-bold">{{ $post->title }}</h2>
+            <p class="blog-post-meta text-muted">Published on {{date("d M Y H:i", strtotime($post->created_at )) }} by
                 <a href="#" class="text-decoration-none text-dark fw-semibold">Me</a>
             </p>
             <hr>
-            <p class="lead">{{ $post[2] }}</p>
+            <p class="lead">{{ $post->content }}</p>
             <a href="{{ route('posts.index') }}">Back</a>
 
         </div>
