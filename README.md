@@ -105,15 +105,15 @@ To Do
     `php artisan make:controller PostController --resource`
 -   yang akan otomatis membuat controller yang memuat CRUD
 
-    | Verb      | URI                  | Action  | Route Name     |
-    | --------- | -------------------- | ------- | -------------- |
-    | GET       | /photos              | index   | photos.index   |
-    | GET       | /photos/create       | create  | photos.create  |
-    | POST      | /photos              | store   | photos.store   |
-    | GET       | /photos/{photo}      | show    | photos.show    |
-    | GET       | /photos/{photo}/edit | edit    | photos.edit    |
-    | PUT/PATCH | /photos/{photo}      | update  | photos.update  |
-    | DELETE    | /photos/{photo}      | destroy | photos.destroy |
+    | Verb      | URI              | Action  | Route Name    |
+    | --------- | ---------------- | ------- | ------------- |
+    | GET       | /posts           | index   | posts.index   |
+    | GET       | /posts/create    | create  | posts.create  |
+    | POST      | /posts           | store   | posts.store   |
+    | GET       | /posts/{id}      | show    | posts.show    |
+    | GET       | /posts/{id}/edit | edit    | posts.edit    |
+    | PUT/PATCH | /posts/{id}      | update  | posts.update  |
+    | DELETE    | /posts/{id}      | destroy | posts.destroy |
 
 -   buat routenya untuk test aja
     ```php
@@ -504,3 +504,133 @@ To Do
 -   tambahkan ini di down `$table->dropColumn('active');`
 -   lalu `php artisan migrate`
 -   melakukan filter di index, tambahkan ini di function index `->where('active', true)`
+
+## Eloquent
+
+### Menambah Library Tinker
+
+Tinker adalah perintah di command line (CLI) Laravel yang digunakan untuk mengisi data ke dalam database. Dengan Tinker, Anda tidak perlu membuat seeder
+
+-   `composer require laravel/tinker`
+-   untuk menggunakan tinker `php artisan tinker`
+
+### Membuat dan Menggunakan Model
+
+-   buat model `php artisan make:model Post`
+-   panggil `use App\Models\Post;` di PostsController
+-   di function index ubah DB menjadi model Post
+
+    ```php
+    $posts = Post::active()->get();
+    ```
+
+-   buat scope di model Post
+
+    ```php
+    public function scopeActive($query) {
+           return $query->where('active', true);
+        }
+    ```
+
+### Menggunakan Eloquent pada Semua Operasi Database
+
+-   ubah dari DB ke model pada semua function di PostController
+
+### Memanfaatkan Soft Deletes
+
+-   fitur yang memungkinkan penghapusan data sementara tanpa benar-benar menghapusnya dari database
+-   tambahkan kolom soft_deletes di tabel posts
+    `php artisan make:migration add_soft_deletes_to_posts`
+-   Dimigration tambahkan dibagian up `$table->softDeletes();` dan down `$table->dropSoftDeletes();`
+-   jalankan migration
+-   tambahkan `use Illuminate\Database\Eloquent\SoftDeletes;` dan `use SoftDeletes` di models/Post.php
+
+### Membuat Relasi Model
+
+-   buat tabel baru Comment (model + migrasi langsung)
+    `php artisan make:model Comment --migration`
+-   dibagian schema migration tambahkan
+
+    ```php
+    $table->id();
+    $table->bigInteger('post_id');
+    $table->string('comment');
+    $table->timestamps();
+    ```
+
+-   jalankan migrasi
+-   relasi dalam model Post (Post akan ada banyak Comment -> hasMany )
+
+    ```php
+    public function comments() {
+            return $this->hasMany(Comment::class);
+        }
+    ```
+
+### Menampilkan Data Relasi
+
+-   panggil komen di function show($id)
+
+    ```php
+    $post = Post::where('id', '=', $id)->first();
+    $comments = $post->comments()->limit(2)->get();
+    $view_data = [
+        'post' => $post,
+        'comments' => $comments,
+    ];
+    ```
+
+-   panggil comen di show.blade.php
+-   tampilkan banyak komen menggunakan function sendiri di Post.php
+
+    ```php
+    public function total_comments() {
+            return $this->comments()->count();
+        }
+    ```
+
+-   panggil di controller function show($id)
+
+```php
+$post = Post::where('id', '=', $id)->first();
+$comments = $post->comments()->limit(2)->get();
+$total_comments = $post->total_comments();
+
+$view_data = [
+    'post' => $post,
+    'comments' => $comments,
+    'total_comments' => $total_comments,
+];
+```
+
+-   panggil di show.blade.php
+
+### Model Event
+
+-   pada controller function store ubah Post::insert menjadi create (agar saat memasukan data bisa melakukan validasi) dan hapus ini `'created_at' => now(), 'updated_at' => now(),`
+
+-   buat properti fillable di PostController (data apa saja yang akan diisi ke dalam create)
+
+```php
+public $fillable = [
+        'title',
+        'content',
+    ];
+```
+
+-   buat migrasi baru (slag)
+    `php artisan make:migration add_slug_to_posts`
+-   pada migrasi slug bagian up tambahkan `$table->string('slug')->after('id');` dan down ` $table->dropColumn('slug');`
+-   jalankan migrasi
+
+-   function boot di Post.php yang akan mentriger Event, akan dijalankan sebelum data dimasukan (creating)
+
+    ```php
+    public static function boot() {
+            parent::boot();
+
+            static::creating(function ($post) {
+                $post->slug = str_replace('', '-', $post->title);
+            });
+        }
+    ```
