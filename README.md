@@ -634,3 +634,25 @@ public $fillable = [
             });
         }
     ```
+
+## Templating Menggunakan Blade
+
+### Implementasi Layout Blade
+
+-   buat layouts/app.blade.php
+-   di index sisakan bagian main konten dan selebihnya pindah ke app.blade.php
+-   panggil di index dengan cara
+
+    ```php
+    @extends('layouts.app') @section('title') Postify @endsection
+    ```
+
+-   di app.blade.php lakukan
+    `@yield('title')
+-   lakukan ke file yang lain juga
+
+### Memisahkan Header \_ Footer
+
+-   buat layouts/app/header.blade.php
+-   pisahkan navbra didalamnya
+-   lalu panggil di app.blade.php `@include('layouts.app.header')`
