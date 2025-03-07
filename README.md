@@ -656,3 +656,102 @@ public $fillable = [
 -   buat layouts/app/header.blade.php
 -   pisahkan navbra didalamnya
 -   lalu panggil di app.blade.php `@include('layouts.app.header')`
+
+## Otentikasi Validasi Input
+
+-   buat route untuk login
+    `use App\Http\Controllers\PostController;`
+    `Route::get('/login', [AuthController::class, 'login']);`
+-   buat AuthController
+-   buat file views/auth/login.blade.php
+-   buat Route untuk post login
+    `Route::post('/login', [AuthController::class, 'authenticate']);`
+-   tambahkan Controller authenticate
+
+### Proses Otentikasi
+
+-   isi Controller authenticate
+-   tambahkan pencetakanerror message
+-   tambahkan route untuk logout
+    `Route::get('/logout', [AuthController::class, 'logout']);`
+-   buat controllernya
+
+    ```php
+    public function logout()
+        {
+            Session::flush();
+            Auth::logout();
+
+            return redirect('login');
+        }
+    ```
+
+-   buat button logout di header
+-   pengaanan saat user belum register/login tidak bisa akses linknya. tambahkan ini di PostController semua function
+
+    ```php
+    if(!Auth::check()) {
+        return redirect('login');
+    }
+    ```
+
+-   tombol login muncul jika belum login dan logout muncul ketika sudah login
+
+    ```html
+    @if(!Auth::check())
+    <a href="{{ url('login') }}" class="btn btn-primary px-4 py-2 fw-semibold"
+        >Login</a
+    >
+    @else
+    <a href="{{ url('logout') }}" class="btn btn-primary px-4 py-2 fw-semibold"
+        >Logout</a
+    >
+    @endif
+    ```
+
+### Form Registrasi
+
+-   buat routnye
+    untuk menampilkan formnya
+    `Route::get('/register', [AuthController::class, 'register_form']);`
+    untuk memproses registrasi
+    `Route::post('/register', [AuthController::class, 'register']);`
+-   buat controllernya di AuthController
+-   buat register.blade.php
+
+### Menambah validasi
+
+-   buat validasi
+
+    ```php
+    public function register(Request $request)
+        {
+            $request->validate([
+                'name'      => 'required',
+                'email'     => 'required|email|unique:users',
+                'password'  => 'required|min:6|confirmed'
+            ]);
+        }
+    ```
+
+-   tambahkan ini untuk validasi di setiap label form register
+
+    ```php
+    @if($errors->has('name'))
+    <span class="text-danger">{{ $errors->first('name') }}</span>
+    @endif
+    ```
+
+### Memasukan Data Registrasi ke Database
+
+-   tambahkan ini di controller register
+
+```php
+User::create([
+    'name'      => $request->input('name'),
+    'email'     => $request->input('email'),
+    'password'  => Hash::make($request->input('password')),
+]);
+```
+
+## External Request

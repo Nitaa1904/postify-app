@@ -1,22 +1,28 @@
-<nav class="navbar navbar-expand-lg navbar-custom">
+<nav class="navbar navbar-expand-lg navbar-custom shadow-sm py-3">
     <div class="container">
-        <a class="navbar-brand" href="#">Blog Laravel</a>
+        <a class="navbar-brand fw-bold fs-4" href="#">Blog Laravel</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <ul class="navbar-nav gap-3">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Home</a>
+                    <a class="nav-link active fw-semibold fs-5" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link fw-semibold fs-5" href="#">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link fw-semibold fs-5" href="#">Contact</a>
                 </li>
             </ul>
+            @if(!Auth::check())
+            <a href="{{ url('login') }}" class="btn btn-primary px-4 py-2 fw-semibold">Login</a>
+            <a href="{{ url('register') }}" class="btn btn-primary px-4 py-2 fw-semibold">Register</a>
+            @else
+            <a href="{{ url('logout') }}" class="btn btn-primary px-4 py-2 fw-semibold">Logout</a>
+            @endif
         </div>
     </div>
 </nav>
