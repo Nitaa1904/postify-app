@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BlogPosted;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,11 +55,15 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
-        Post::create([
+
+        $post = Post::create([
             'title' => $request->input('title'),
             'content' => $request->input('content'),
             
         ]);
+        
+        \Mail::to(Auth::user()->email)->send(new BlogPosted($post));
+        
         return redirect('/posts')->with('success', 'Postingan berhasil dibuat!');
     }
 

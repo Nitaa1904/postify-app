@@ -29,7 +29,7 @@ noted jika error tampilanya
 
 ### Alur Dasar Laravel (MVC)
 
-![alt text](public/build/assets/image1.png)
+![alt text](public/assets/image1.png)
 
 ### Membuat Routing
 
@@ -78,7 +78,7 @@ return membalikan nilai ke route dalam laravelmakanya gak pakai echo yang hanya 
 
 ### Project Overview
 
-![alt text](public/build/assets/image2.png)
+![alt text](public/assets/image2.png)
 
 To Do
 
@@ -93,13 +93,13 @@ To Do
 
 ### Metode HTTP
 
-![alt text](public/build/assets/image3.png)
+![alt text](public/assets/image3.png)
 
 -   misal menambahkan post untuk url hello (routes dan controller)
 
 ### Resource Controller
 
-![alt text](public/build/assets/image4.png)
+![alt text](public/assets/image4.png)
 
 -   membuat resource controller
     `php artisan make:controller PostController --resource`
@@ -755,3 +755,75 @@ User::create([
 ```
 
 ## External Request
+
+### Mengirim Email Menggunakan Mailtrap
+
+-   buat akun di mailtrap.io
+-   masuk ke email testing/inboxes lalu isi ini di env
+    MAIL_HOST=sandbox.smtp.mailtrap.io
+    MAIL_PORT=
+    MAIL_USERNAME=
+    MAIL_PASSWORD=
+-   buat objech mail (jika blog di post maka akan mengirimkan email)
+    `php artisan make:mail BlogPosted`
+-   di app/Mail/BlogPosted.php setting function envelope dan content
+-   buat views/mails/blog_posted.blade.php
+-   tambahkan ini di PostController function store
+    `\Mail::to('nitaaaries25@gmail.com')->send(new BlogPosted());`
+
+### Membuat Struktur Body Email
+
+-   mengirimkan ke email user
+-   pada app/Mail/BlogPosted tambahkan ini
+
+    ```php
+    protected $post;
+        public function __construct($post)
+        {
+            $this->post =  $post;
+        }
+        public function envelope(): Envelope
+        {
+            return new Envelope(
+                from: new Address('nitafitrotul1904@gmail.com', 'Nita Fitrotul Marah'),
+                subject: "Blog Baru: {$this->post->title}",
+            );
+        }
+    ```
+
+-   panggil di PostController function store
+
+    ```php
+    $post = Post::create([
+        'title' => $request->input('title'),
+        'content' => $request->input('content'),
+
+    ]);
+
+    \Mail::to(Auth::user()->email)->send(new BlogPosted($post));
+    ```
+
+-   menambah isi email agar sesuai data yang dikirim
+-   pada app/Mail/BlogPosted tambahkan ini
+
+    ```php
+    public function content(): Content
+        {
+            return new Content(
+                view: 'mails.blog_posted',
+                with: [
+                    'post' => $this->post
+                ]
+            );
+        }
+    ```
+
+-   pada views/mails/blog_posted panggil {{ $post->content }} dan styling
+
+### Notifikasi Telegram
+
+![alt text](public/assets/image.png)
+
+-   laukukan tahap persiapa maka akan menghasilkan HTTP API
+-   lalu buat group dengan menginvite bot yang sudah dibuat tadi
+-   lalu tambahkan rawdatabot di anggota groupnya
