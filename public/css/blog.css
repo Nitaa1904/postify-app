@@ -1,72 +1,156 @@
+:root {
+    --white: #fafafa;
+    --soft-green: #7ec8a3;
+    --teal-blue: #6aa8a1;
+    --light-gray: #eaeaea;
+    --sage-green: #5e8770;
+    --navy: #1e3a5f;
+}
+
 /* Global Styles */
 body {
-    background-color: #f4f4f4;
-    font-family: "Arial", sans-serif;
-    color: #333;
+    background-color: var(--white);
+    color: var(--navy);
+    font-family: "Poppins", sans-serif;
 }
 
 /* Navbar */
 .navbar-custom {
-    background-color: #1f1f1f;
-    padding: 12px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: var(--teal-blue) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-custom .navbar-brand {
-    color: #fff;
-    font-weight: bold;
+.navbar-brand {
+    color: var(--white);
+    font-weight: 700;
 }
 
-.navbar-custom .nav-link {
-    color: #ccc;
-    font-size: 16px;
-}
-
-.navbar-custom .nav-link:hover {
-    color: #fff;
-}
-
-/* Card */
-.custom-card {
-    background: #ffffff;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease-in-out;
-}
-
-.custom-card:hover {
-    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Title & Text */
-.card-title {
-    color: #1f1f1f;
-    font-weight: bold;
-}
-
-.card-text {
-    color: #555;
-    font-size: 14px;
-}
-
-/* Button */
+/* Tombol */
 .btn-primary {
-    background-color: #333;
-    border-color: #333;
-    font-weight: bold;
+    background-color: var(--teal-blue);
+    border-color: var(--teal-blue);
+    color: var(--white);
+    transition: all 0.3s ease, transform 0.2s ease-in-out;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:hover {
-    background-color: #222;
-    border-color: #222;
+    background-color: var(--sage-green);
+    border-color: var(--sage-green);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Tombol Buat Postingan */
+.btn-create-post {
+    background-color: var(--soft-green);
+    border: none;
+    color: var(--white);
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-create-post:hover {
+    background-color: var(--sage-green);
+    transform: scale(1.05);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Footer */
 .footer {
-    background-color: #1f1f1f;
-    color: #ccc;
-    padding: 20px;
+    background-color: var(--teal-blue);
+    color: var(--white);
+    padding: 20px 0;
     text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    border-top: 3px solid var(--soft-green);
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Input */
+.form-control {
+    border: 1px solid var(--teal-blue);
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--soft-green);
+    box-shadow: 0 0 8px rgba(126, 200, 163, 0.5);
+}
+
+/* Card Styling */
+.card {
+    background-color: var(--white);
+    border: 1px solid var(--sage-green);
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+/* Read More Page Styling */
+.text-navy {
+    color: var(--navy);
+}
+
+.text-justify {
+    text-align: justify;
+    line-height: 1.6;
+}
+
+.blog-post-meta {
     font-size: 14px;
+}
+
+.comment-card {
+    background-color: var(--light-gray);
+    border-left: 4px solid var(--soft-green);
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.comment-card:hover {
+    transform: scale(1.02);
+}
+
+/* Tombol Back */
+.btn-back {
+    border-color: var(--teal-blue);
+    color: var(--teal-blue);
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-back:hover {
+    background-color: var(--teal-blue);
+    color: var(--white);
+}
+
+/* Readable Text Color */
+.text-navy {
+    color: var(--navy);
+}
+
+/* Input Styling */
+.input-custom {
+    border: 1px solid var(--teal-blue);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-custom:focus {
+    border-color: var(--soft-green);
+    box-shadow: 0 0 8px rgba(126, 200, 163, 0.5);
 }

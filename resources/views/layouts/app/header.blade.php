@@ -17,12 +17,20 @@
                     <a class="nav-link fw-semibold fs-5" href="#">Contact</a>
                 </li>
             </ul>
-            @if(!Auth::check())
-            <a href="{{ url('login') }}" class="btn btn-primary px-4 py-2 fw-semibold">Login</a>
-            <a href="{{ url('register') }}" class="btn btn-primary px-4 py-2 fw-semibold">Register</a>
-            @else
-            <a href="{{ url('logout') }}" class="btn btn-primary px-4 py-2 fw-semibold">Logout</a>
-            @endif
+            <div class="d-flex align-items-center gap-2">
+                @if(!Auth::check())
+                <a href="{{ url('login') }}" class="btn btn-primary px-4 py-2 fw-semibold">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{{ url('register') }}" class="btn btn-primary px-4 py-2 fw-semibold">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+                @else
+                <a href="{{ url('logout') }}" class="btn btn-primary px-4 py-2 fw-semibold">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                @endif
+            </div>
         </div>
     </div>
 </nav>
