@@ -13,20 +13,42 @@
 
             <p class="lead text-justify">{{ $post->content }}</p>
 
-            <div class="mt-4">
-                <h5 class="fw-bold text-navy">Comments ({{ $total_comments }})</h5>
-                @foreach($comments as $comment)
-                <div class="card mb-3 border-0 shadow-sm comment-card">
-                    <div class="card-body p-3">
-                        <p class="mb-0 small text-muted">{{ $comment->comment }}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
             <div class="mt-3 text-center">
                 <a href="{{ route('posts.index') }}" class="btn btn-outline-primary btn-back">Back</a>
             </div>
+
+            <br />
+            <br />
+            @if(Auth::check())
+            <form action="{{ route('comments.store', $post->id) }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Tambahkan Komentar:</label>
+                    <textarea name="comment" id="comment" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Kirim</button>
+            </form>
+            @else
+            <p><a href="{{ url('/login') }}">Login</a> untuk berkomentar.</p>
+            @endif
+
+            <div class="mt-4">
+                <h3 class="mb-3">Komentar</h3>
+
+                @if ($comments->count() > 0)
+                <ul class="list-group">
+                    @foreach ($comments as $comment)
+                    <li class="list-group-item">
+                        <p class="mb-1">{{ $comment->comment }}</p>
+                        <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+                    </li>
+                    @endforeach
+                </ul>
+                @else
+                <p class="text-muted">Belum ada komentar.</p>
+                @endif
+            </div>
+
         </div>
     </div>
 </div>

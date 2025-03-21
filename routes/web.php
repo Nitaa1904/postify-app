@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,3 +35,6 @@ Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::get('posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
 Route::patch('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
 Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+
+Route::post('/comments/{post}', [CommentController::class, 'store'])->name('comments.store');
